@@ -17,7 +17,7 @@ public struct JSONExtractor: Extractor {
             iconSet.all.map {
                 Image(
                     idiom: iconSet.idiom,
-                    size: "\($0.baseSizeStr)x\($0.baseSizeStr)",
+                    size: $0.baseSizeStr,
                     scale: $0.scale.rawValue,
                     filename: $0.name(iconName: iconName)
                 )

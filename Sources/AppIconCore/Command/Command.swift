@@ -3,7 +3,7 @@ import SwiftShell
 
 enum Command {
     case createDirectory(output: String)
-    case extractImage(base: String, output: String, size: Float)
+    case extractImage(base: String, output: String, size: CGSize)
     case createJSON(json: String, output: String)
 
     func execute() throws {
@@ -11,7 +11,7 @@ enum Command {
         case .createDirectory(let output):
             try execute("/bin/mkdir", "-p", output)
         case .extractImage(let base, let output, let size):
-            try execute("/usr/bin/sips", "-Z", "\(size)", base, "--out", output)
+            try execute("/usr/bin/sips", "-z", "\(size.height)", "\(size.width)", base, "--out", output)
         case .createJSON(let json, let output):
             let writefile = try open(forWriting: output, overwrite: true)
             writefile.write(json)

@@ -1,10 +1,10 @@
 import Foundation
 
 struct AppIcon {
-    let baseSize: Float
+    let baseSize: CGSize
     let scale: Scale
 
-    init(baseSize: Float, scale: Scale = .single) {
+    init(baseSize: CGSize, scale: Scale = .single) {
         self.baseSize = baseSize
         self.scale = scale
     }
@@ -13,24 +13,26 @@ struct AppIcon {
         return "\(iconName)-\(baseSize)x\(baseSize)@\(scale.rawValue).png"
     }
 
-    var size: Float {
+    var size: CGSize {
         switch scale {
         case .single:
             return baseSize
         case .twice:
-            return baseSize * 2.0
+            return CGSize(width: baseSize.width * 2.0, height: baseSize.height * 2.0)
         case .triple:
-            return baseSize * 3.0
+            return CGSize(width: baseSize.width * 3.0, height: baseSize.height * 3.0)
         }
     }
 
     var baseSizeStr: String {
-        return (baseSize == round(baseSize)) ? String(format: "%.f", baseSize) : "\(baseSize)"
+        let widthStr = (baseSize.width == round(baseSize.width)) ? String(format: "%.f", baseSize.width) : "\(baseSize.width)"
+        let heightStr = (baseSize.height == round(baseSize.height)) ? String(format: "%.f", baseSize.height) : "\(baseSize.height)"
+        return widthStr + "x" + heightStr
     }
 }
 
 struct AppIconSet {
-    let baseSize: Float
+    let baseSize: CGSize
     let platform: Platform
     let scales: [Scale]
 
@@ -42,34 +44,64 @@ struct AppIconSet {
         return scales.map { AppIcon(baseSize: baseSize, scale: $0) }
     }
 
-    init(baseSize: Float, platform: Platform, scales: [Scale]? = nil) {
+    init(baseSize: CGSize, platform: Platform, scales: [Scale]? = nil) {
         self.baseSize = baseSize
         self.platform = platform
         self.scales = scales ?? platform.scales
     }
 }
 
-public enum AppIcons: Float {
+public enum AppIcons {
+    
     // iPhone
-    case notification = 20.0
-    case settings     = 29.0
-    case spotlight    = 40.0
-    case iphoneApp    = 60.0
+    case notification
+    case settings
+    case spotlight
+    case iphoneApp
 
     // marketing
-    case marketing    = 1024.0
+    case marketing
 
     // iPad
-    case iPadApp      = 76.0
-    case iPadProApp   = 83.5
+    case iPadApp
+    case iPadProApp
 
     // Mac
-    case macSmall2    = 16.0
-    case macSmall     = 32.0
-    case macMedium    = 128.0
-    case macLarge     = 256.0
-    case macLarge2    = 512.0
+    case macSmall2
+    case macSmall
+    case macMedium
+    case macLarge
+    case macLarge2
 
+    var size: CGSize {
+        switch self {
+        case .notification:
+            return CGSize(width: 20, height: 20)
+        case .settings:
+            return CGSize(width: 29, height: 29)
+        case .spotlight:
+            return CGSize(width: 40, height: 40)
+        case .iphoneApp:
+            return CGSize(width: 60, height: 60)
+        case .marketing:
+            return CGSize(width: 1024, height: 1024)
+        case .iPadApp:
+            return CGSize(width: 76, height: 76)
+        case .iPadProApp:
+            return CGSize(width: 83.5, height: 83.5)
+        case .macSmall2:
+            return CGSize(width: 16, height: 16)
+        case .macSmall:
+            return CGSize(width: 32, height: 32)
+        case .macMedium:
+            return CGSize(width: 128, height: 128)
+        case .macLarge:
+            return CGSize(width: 256, height: 256)
+        case .macLarge2:
+            return CGSize(width: 512, height: 512)
+        }
+    }
+    
     static func all(with platforms: [Platform]) -> [AppIconSet] {
         return platforms
             .map { platform -> [AppIconSet] in
@@ -80,7 +112,7 @@ public enum AppIcons: Float {
 
     private func set(with platform: Platform = .iphone) -> AppIconSet {
         let scales = twiceOnly.contains(self) ? [Scale.twice] : nil
-        return AppIconSet(baseSize: self.rawValue, platform: platform, scales: scales)
+        return AppIconSet(baseSize: self.size, platform: platform, scales: scales)
     }
 
     private var twiceOnly: [AppIcons] {
