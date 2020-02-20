@@ -1,15 +1,29 @@
 import Foundation
 
-public enum Platform: String {
-    case iphone = "iphone"
-    case marketing = "ios-marketing"
-    case ipad = "ipad"
-    case mac = "mac"
-    case imessage = "imessage"
+public enum Platform {
+    case iphone(imessage: Bool = false)
+    case marketing(imessage: Bool = false)
+    case ipad(imessage: Bool = false)
+    case mac
+    case universal(imessage: Bool = true)
 
+    var idiom: String {
+        switch self {
+        case .iphone:
+            return "iphone"
+        case .marketing:
+            return "ios-marketing"
+        case .ipad:
+            return "ipad"
+        case .mac:
+            return "mac"
+        case .universal:
+            return "universal"
+        }
+    }
     var scales: [Scale] {
         switch self {
-        case .iphone, .imessage:
+        case .iphone, .universal:
             return [.twice, .triple]
         case .marketing:
             return [.single]
@@ -20,32 +34,63 @@ public enum Platform: String {
 
     var appIcons: [AppIcons] {
         switch self {
-        case .iphone:
-            return [.notification, .settings, .spotlight, .iphoneApp]
-        case .marketing:
-            return [.marketing]
-        case .ipad:
-            return [.notification, .settings, .spotlight, .iPadApp, .iPadProApp]
+        case .iphone(let imessage):
+            return imessage ? [.iPhoneMessage, .settings] : [.notification, .settings, .spotlight, .iphoneApp]
+        case .marketing(let imessage):
+            return imessage ? [.marketingImessage, .marketing] : [.marketing]
+        case .ipad(let imessage):
+            return imessage ? [.iPadMessage, .iPadProMessage] : [.notification, .settings, .spotlight, .iPadApp, .iPadProApp]
+        case .universal(let imessage):
+            return imessage ? [.message1, .message2] : []
         case .mac:
             return [.macSmall2, .macSmall, .macMedium, .macLarge, .macLarge2]
-        case .imessage:
-            return [.marketing, .marketingImessage, .settings, .iPadMessage, .iPhoneMessage, .iPadProMessage, .message1, .message2]
         }
     }
 
     public static func platforms(ipad: Bool, mac: Bool, imessage: Bool) -> [Platform] {
-        if imessage {
-            return [.imessage]
-        }
+        var platforms = [Platform]()
         switch (ipad, mac) {
         case (true, true):
-            return [.iphone, .ipad, .marketing, .mac]
+            platforms = [.iphone(imessage: imessage),
+                         .ipad(imessage: imessage),
+                         .marketing(imessage: imessage),
+                         .mac]
         case (true, false):
-            return [.iphone, .ipad, .marketing]
+            platforms = [.iphone(imessage: imessage),
+                         .ipad(imessage: imessage),
+                         .marketing(imessage: imessage)]
         case (false, true):
             return [.mac]
         case (false, false):
-            return [.iphone, .marketing]
+            platforms = [.iphone(imessage: imessage),
+                         .marketing(imessage: imessage)]
+        }
+        
+        if imessage {
+            platforms.append(.universal(imessage: true))
+            if !ipad {
+                platforms.append(.ipad(imessage: true))
+            }
+        }
+        return platforms
+    }
+}
+
+extension Platform: Equatable {
+    public static func == (lhs: Platform, rhs: Platform) -> Bool {
+        switch (lhs, rhs) {
+        case (.iphone(let a), .iphone(let b)):
+            return a == b
+        case (.ipad(let a), .ipad(let b)):
+            return a == b
+        case (.marketing(let a), .marketing(let b)):
+            return a == b
+        case (.universal(let a), .universal(let b)):
+            return a == b
+        case (.mac, .mac):
+            return true
+        default:
+            return false
         }
     }
 }

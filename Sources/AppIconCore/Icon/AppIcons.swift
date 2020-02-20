@@ -10,7 +10,7 @@ struct AppIcon {
     }
 
     func name(iconName: String) -> String {
-        return "\(iconName)-\(baseSize)x\(baseSize)@\(scale.rawValue).png"
+        return "\(iconName)-\(baseSizeStr)@\(scale.rawValue).png"
     }
 
     var size: CGSize {
@@ -37,7 +37,7 @@ struct AppIconSet {
     let scales: [Scale]
 
     var idiom: String {
-        return platform.rawValue
+        return platform.idiom
     }
 
     var all: [AppIcon] {
@@ -130,7 +130,7 @@ public enum AppIcons {
             .reduce([]) { $0 + $1 }
     }
 
-    private func set(with platform: Platform = .iphone) -> AppIconSet {
+    private func set(with platform: Platform = .iphone(imessage: false)) -> AppIconSet {
         let scales = twiceOnly.contains(self) ? [Scale.twice] : nil
         return AppIconSet(baseSize: self.size, platform: platform, scales: scales)
     }

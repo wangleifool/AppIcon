@@ -13,7 +13,9 @@ let main = command(
         throw ArgumentError.missingValue(argument: "base image (1024x1024.png)")
     }
 
-    let outputExpansion = ".appiconset"
+    let outputExpansion = imessage ? ".stickersiconset" : ".appiconset"
+    let path = imessage ? (path == "AppIcon" ? "iMessage App Icon" : path) : path
+    let iconName = imessage ? (path == "AppIcon" ? "iMessage App Icon" : iconName) : iconName
     let outputPath = path.hasSuffix(outputExpansion) ? path : "\(path)\(outputExpansion)"
     let platforms = Platform.platforms(ipad: ipad, mac: mac, imessage: imessage)
 
