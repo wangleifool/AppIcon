@@ -59,8 +59,16 @@ public enum AppIcons {
     case spotlight
     case iphoneApp
 
+    // iMessage
+    case iPhoneMessage
+    case iPadMessage
+    case iPadProMessage
+    case message1
+    case message2
+    
     // marketing
     case marketing
+    case marketingImessage
 
     // iPad
     case iPadApp
@@ -99,6 +107,18 @@ public enum AppIcons {
             return CGSize(width: 256, height: 256)
         case .macLarge2:
             return CGSize(width: 512, height: 512)
+        case .iPhoneMessage:
+            return CGSize(width: 60.0, height: 45.0)
+        case .iPadMessage:
+            return CGSize(width: 67.0, height: 50.0)
+        case .iPadProMessage:
+            return CGSize(width: 74.0, height: 55.0)
+        case .message1:
+            return CGSize(width: 27.0, height: 20.0)
+        case .message2:
+            return CGSize(width: 32, height: 24)
+        case .marketingImessage:
+            return CGSize(width: 1024, height: 768)
         }
     }
     

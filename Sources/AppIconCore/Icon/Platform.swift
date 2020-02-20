@@ -5,10 +5,11 @@ public enum Platform: String {
     case marketing = "ios-marketing"
     case ipad = "ipad"
     case mac = "mac"
+    case imessage = "imessage"
 
     var scales: [Scale] {
         switch self {
-        case .iphone:
+        case .iphone, .imessage:
             return [.twice, .triple]
         case .marketing:
             return [.single]
@@ -27,10 +28,15 @@ public enum Platform: String {
             return [.notification, .settings, .spotlight, .iPadApp, .iPadProApp]
         case .mac:
             return [.macSmall2, .macSmall, .macMedium, .macLarge, .macLarge2]
+        case .imessage:
+            return [.marketing, .marketingImessage, .settings, .iPadMessage, .iPhoneMessage, .iPadProMessage, .message1, .message2]
         }
     }
 
-    public static func platforms(ipad: Bool, mac: Bool) -> [Platform] {
+    public static func platforms(ipad: Bool, mac: Bool, imessage: Bool) -> [Platform] {
+        if imessage {
+            return [.imessage]
+        }
         switch (ipad, mac) {
         case (true, true):
             return [.iphone, .ipad, .marketing, .mac]
